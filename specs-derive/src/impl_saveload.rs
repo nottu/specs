@@ -121,11 +121,11 @@ fn saveload_struct(
     let saveload_fields = convert_fields_to_metadata(&data.fields);
 
     let (struct_def, ser, de) = if let Fields::Named(_) = data.fields {
-        saveload_named_struct(&name, &saveload_name, &saveload_generics, &saveload_fields)
+        saveload_named_struct(name, &saveload_name, &saveload_generics, &saveload_fields)
     } else if let Fields::Unnamed(_) = data.fields {
         saveload_tuple_struct(
             data,
-            &name,
+            name,
             &saveload_name,
             &saveload_generics,
             &saveload_fields,
@@ -328,7 +328,7 @@ where
 
             FieldMetaData {
                 field: resolved,
-                skip_field: field_should_skip(&f),
+                skip_field: field_should_skip(f),
             }
         })
         .collect()
@@ -564,18 +564,18 @@ fn replace_field(field: &mut Field) {
 /// Replaces the type with its corresponding `Data` type.
 fn replace_entity_type(ty: &mut Type) {
     match ty {
-        Type::Array(ty) => replace_entity_type(&mut *ty.elem),
+        Type::Array(ty) => replace_entity_type(&mut ty.elem),
         Type::Tuple(ty) => {
             for ty in ty.elems.iter_mut() {
                 replace_entity_type(&mut *ty);
             }
         }
-        Type::Paren(ty) => replace_entity_type(&mut *ty.elem),
+        Type::Paren(ty) => replace_entity_type(&mut ty.elem),
         Type::Path(ty) => {
             let ty_tok = ty.clone();
             *ty = parse_quote!(<#ty_tok as ConvertSaveload<MA>>::Data);
         }
-        Type::Group(ty) => replace_entity_type(&mut *ty.elem),
+        Type::Group(ty) => replace_entity_type(&mut ty.elem),
         Type::TraitObject(_) => {}
         Type::ImplTrait(_) => {}
         Type::Slice(_) => {

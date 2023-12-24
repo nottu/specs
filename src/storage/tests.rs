@@ -1024,7 +1024,7 @@ mod test {
             let mut acc = 0;
             (&e, s.entries()).lend_join().for_each(|(_, value)| {
                 let v = value.or_insert(2.into());
-                acc = acc + v.0;
+                acc += v.0;
             });
             sum = acc;
         });

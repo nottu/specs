@@ -53,7 +53,7 @@ fn task_panics() {
     DispatcherBuilder::new()
         .with(Sys, "s", &[])
         .build()
-        .dispatch(&mut world);
+        .dispatch(&world);
 }
 
 #[test]
@@ -97,11 +97,11 @@ fn dynamic_create() {
         }
     }
 
-    let mut world = create_world();
+    let world = create_world();
     let mut dispatcher = DispatcherBuilder::new().with(Sys, "s", &[]).build();
 
     for _ in 0..ITERATIONS {
-        dispatcher.dispatch(&mut world);
+        dispatcher.dispatch(&world);
     }
 }
 
@@ -118,11 +118,11 @@ fn dynamic_deletion() {
         }
     }
 
-    let mut world = create_world();
+    let world = create_world();
     let mut dispatcher = DispatcherBuilder::new().with(Sys, "s", &[]).build();
 
     for _ in 0..ITERATIONS {
-        dispatcher.dispatch(&mut world);
+        dispatcher.dispatch(&world);
     }
 }
 
@@ -295,7 +295,7 @@ fn stillborn_entities() {
         .build();
 
     for _ in 0..100 {
-        dispatcher.dispatch(&mut world);
+        dispatcher.dispatch(&world);
     }
 }
 
@@ -361,7 +361,7 @@ fn join_two_components() {
         }
     }
     let mut dispatcher = DispatcherBuilder::new().with(Iter, "iter", &[]).build();
-    dispatcher.dispatch(&mut world);
+    dispatcher.dispatch(&world);
 }
 
 #[test]
@@ -411,7 +411,7 @@ fn par_join_two_components() {
     let mut dispatcher = DispatcherBuilder::new()
         .with(Iter(&first, &second, &error), "iter", &[])
         .build();
-    dispatcher.dispatch(&mut world);
+    dispatcher.dispatch(&world);
     assert_eq!(
         *error.lock().unwrap(),
         None,
@@ -471,7 +471,7 @@ fn par_join_with_maybe() {
                     } else if !second.load(Ordering::SeqCst) && int.0 == 2 && boolean == Some(true)
                     {
                         second.store(true, Ordering::SeqCst);
-                    } else if !third.load(Ordering::SeqCst) && int.0 == 3 && boolean == None {
+                    } else if !third.load(Ordering::SeqCst) && int.0 == 3 && boolean.is_none() {
                         third.store(true, Ordering::SeqCst);
                     } else {
                         *error.lock().unwrap() = Some((int.0, boolean));
@@ -482,7 +482,7 @@ fn par_join_with_maybe() {
     let mut dispatcher = DispatcherBuilder::new()
         .with(Iter(&first, &second, &third, &error), "iter", &[])
         .build();
-    dispatcher.dispatch(&mut world);
+    dispatcher.dispatch(&world);
     assert_eq!(
         *error.lock().unwrap(),
         None,
@@ -543,13 +543,13 @@ fn par_join_many_entities_and_systems() {
         .with_barrier()
         .with(FindFailed(&failed), "find_failed", &[])
         .build();
-    dispatcher.dispatch(&mut world);
-    for &(id, n) in &*failed.lock().unwrap() {
+    dispatcher.dispatch(&world);
+    if let Some(&(id, n)) = failed.lock().unwrap().first() {
         panic!(
             "Entity with id {} failed to count to 127. Count was {}",
             id, n
         );
-    }
+    };
 }
 
 #[test]

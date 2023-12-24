@@ -91,7 +91,7 @@ fn main() {
         world.create_entity().with(TrackedComponent(0)).build();
     }
 
-    dispatcher.dispatch(&mut world);
+    dispatcher.dispatch(&world);
     world.maintain();
 
     let entities = (&world.entities(), &world.read_storage::<TrackedComponent>())
@@ -104,6 +104,6 @@ fn main() {
         world.create_entity().with(TrackedComponent(0)).build();
     }
 
-    dispatcher.dispatch(&mut world);
+    dispatcher.dispatch(&world);
     world.maintain();
 }

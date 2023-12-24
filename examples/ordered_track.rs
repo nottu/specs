@@ -89,7 +89,7 @@ fn main() {
     let e3 = world.create_entity().with(TrackedComponent(3)).build();
     let e4 = world.create_entity().with(TrackedComponent(4)).build();
 
-    dispatcher.dispatch(&mut world);
+    dispatcher.dispatch(&world);
     world.maintain();
 
     {
@@ -100,7 +100,7 @@ fn main() {
         tracked.remove(e1);
     }
 
-    dispatcher.dispatch(&mut world);
+    dispatcher.dispatch(&world);
     world.maintain();
 
     {
@@ -115,6 +115,6 @@ fn main() {
         tracked.insert(e3, TrackedComponent(10)).unwrap();
     }
 
-    dispatcher.dispatch(&mut world);
+    dispatcher.dispatch(&world);
     world.maintain();
 }

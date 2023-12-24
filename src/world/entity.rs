@@ -612,7 +612,7 @@ mod tests {
 
         assert_ne!(allocator.allocate(), entity);
 
-        assert_eq!(allocator.killed.contains(entity.id()), true);
+        assert!(!allocator.killed.contains(entity.id()));
         assert_eq!(allocator.merge(), vec![entity]);
     }
 
@@ -630,7 +630,7 @@ mod tests {
 
         allocator.allocate();
 
-        assert_eq!(allocator.killed.contains(entity.id()), false);
+        assert!(!allocator.killed.contains(entity.id()));
         assert_eq!(allocator.merge(), vec![]);
     }
 }
